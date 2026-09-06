@@ -1,0 +1,308 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* === Paleta base (Vispro) === */
+  --vp-teal-50: #ECFDF7;
+  --vp-teal-100: #D1FAE9;
+  --vp-teal-200: #A7F0D3;
+  --vp-teal-500: #14B8A6;
+  --vp-teal-600: #0D9488;
+  --vp-teal-700: #0F766E;
+  --vp-teal-800: #115E59;
+
+  --vp-green-100: #DCFCE7;
+  --vp-green-500: #16A34A;
+  --vp-green-700: #15803D;
+
+  --vp-orange-100: #FEF3C7;
+  --vp-orange-500: #F59E0B;
+  --vp-orange-700: #B45309;
+
+  --vp-red-100: #FEE2E2;
+  --vp-red-500: #DC2626;
+  --vp-red-700: #B91C1C;
+
+  --vp-blue-100: #DBEAFE;
+  --vp-blue-500: #3B82F6;
+  --vp-blue-700: #1D4ED8;
+
+  /* superficies do tema claro */
+  --vp-surface-2: #F5F5F2;
+  --vp-surface-3: #EFEEEA;
+  --vp-text-faint: #9A9890;
+  --vp-border-strong: #D6D3CC;
+
+  /* === Tokens shadcn === */
+  --radius: 10px;
+
+  --background: #FAFAF7;
+  --foreground: #1B1B17;
+
+  --card: #FFFFFF;
+  --card-foreground: #1B1B17;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #1B1B17;
+
+  --primary: var(--vp-teal-600);
+  --primary-foreground: #FFFFFF;
+
+  --secondary: var(--vp-surface-2);
+  --secondary-foreground: #1B1B17;
+
+  --muted: var(--vp-surface-2);
+  --muted-foreground: #6B6962;
+
+  --accent: var(--vp-surface-3);
+  --accent-foreground: #1B1B17;
+
+  --destructive: var(--vp-red-500);
+  --destructive-foreground: #FFFFFF;
+
+  --success: var(--vp-green-500);
+  --warning: var(--vp-orange-500);
+  --info: var(--vp-blue-500);
+
+  --border: #E8E6E0;
+  --input: #E8E6E0;
+  --ring: var(--vp-teal-600);
+
+  --chart-1: var(--vp-teal-600);
+  --chart-2: var(--vp-green-500);
+  --chart-3: var(--vp-orange-500);
+  --chart-4: var(--vp-blue-500);
+  --chart-5: var(--vp-red-500);
+
+  --sidebar: var(--vp-surface-2);
+  --sidebar-foreground: #1B1B17;
+  --sidebar-primary: var(--vp-teal-600);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: var(--vp-surface-3);
+  --sidebar-accent-foreground: #1B1B17;
+  --sidebar-border: #E8E6E0;
+  --sidebar-ring: var(--vp-teal-600);
+
+  /* elevacoes (trocadas no tema escuro) */
+  --elevation-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --elevation-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03);
+  --elevation-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --elevation-lg: 0 12px 32px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --elevation-xl: 0 24px 60px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  --overlay: rgba(15, 15, 12, 0.45);
+}
+
+.dark {
+  --vp-teal-50: #042F2A;
+  --vp-teal-100: #064E48;
+
+  --vp-surface-2: #26262A;
+  --vp-surface-3: #2E2E33;
+  --vp-text-faint: #6D6B65;
+  --vp-border-strong: #3F3F45;
+
+  --background: #18181A;
+  --foreground: #F2F1EE;
+
+  --card: #1F1F22;
+  --card-foreground: #F2F1EE;
+
+  --popover: #1F1F22;
+  --popover-foreground: #F2F1EE;
+
+  --primary: var(--vp-teal-600);
+  --primary-foreground: #FFFFFF;
+
+  --secondary: var(--vp-surface-2);
+  --secondary-foreground: #F2F1EE;
+
+  --muted: var(--vp-surface-2);
+  --muted-foreground: #A5A39C;
+
+  --accent: var(--vp-surface-3);
+  --accent-foreground: #F2F1EE;
+
+  --destructive: var(--vp-red-500);
+  --destructive-foreground: #FFFFFF;
+
+  --border: #2E2E33;
+  --input: #2E2E33;
+  --ring: var(--vp-teal-500);
+
+  --sidebar: var(--vp-surface-2);
+  --sidebar-foreground: #F2F1EE;
+  --sidebar-primary: var(--vp-teal-500);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: var(--vp-surface-3);
+  --sidebar-accent-foreground: #F2F1EE;
+  --sidebar-border: #2E2E33;
+  --sidebar-ring: var(--vp-teal-500);
+
+  --elevation-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elevation-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --elevation-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --elevation-lg: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+  --elevation-xl: 0 24px 60px rgba(0, 0, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 22px;
+
+  --shadow-2xs: var(--elevation-xs);
+  --shadow-xs: var(--elevation-xs);
+  --shadow-sm: var(--elevation-sm);
+  --shadow-md: var(--elevation-md);
+  --shadow-lg: var(--elevation-lg);
+  --shadow-xl: var(--elevation-xl);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-border: var(--border);
+  --color-border-strong: var(--vp-border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-faint: var(--vp-text-faint);
+  --color-surface-2: var(--vp-surface-2);
+  --color-surface-3: var(--vp-surface-3);
+
+  --color-teal-50: var(--vp-teal-50);
+  --color-teal-100: var(--vp-teal-100);
+  --color-teal-200: var(--vp-teal-200);
+  --color-teal-500: var(--vp-teal-500);
+  --color-teal-600: var(--vp-teal-600);
+  --color-teal-700: var(--vp-teal-700);
+  --color-teal-800: var(--vp-teal-800);
+  --color-green-100: var(--vp-green-100);
+  --color-green-500: var(--vp-green-500);
+  --color-green-700: var(--vp-green-700);
+  --color-orange-100: var(--vp-orange-100);
+  --color-orange-500: var(--vp-orange-500);
+  --color-orange-700: var(--vp-orange-700);
+  --color-red-100: var(--vp-red-100);
+  --color-red-500: var(--vp-red-500);
+  --color-red-700: var(--vp-red-700);
+  --color-blue-100: var(--vp-blue-100);
+  --color-blue-500: var(--vp-blue-500);
+  --color-blue-700: var(--vp-blue-700);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--vp-border-strong);
+    border-radius: 5px;
+    border: 2px solid var(--background);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--vp-text-faint);
+  }
+}
+
+/* Marca "V" do Vistoria Pro (gradiente teal). Tamanho/fonte vem das classes do Tailwind. */
+@utility brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background-image: linear-gradient(135deg, var(--vp-teal-500), var(--vp-teal-700));
+  color: #ffffff;
+  box-shadow:
+    0 2px 6px rgba(13, 148, 136, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Fundo decorativo das telas de onboarding: halos teal + grid com mascara radial. */
+@utility onboarding-bg {
+  min-height: 100vh;
+  width: 100vw;
+  overflow: auto;
+  position: relative;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(20, 184, 166, 0.08), transparent 38%),
+    radial-gradient(circle at 88% 78%, rgba(20, 184, 166, 0.1), transparent 42%);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 56px 56px;
+    opacity: 0.18;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    pointer-events: none;
+  }
+}
