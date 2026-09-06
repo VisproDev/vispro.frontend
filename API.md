@@ -185,31 +185,6 @@ Erros: `404` solicitação não encontrada · `403` quem chama não é o alvo ·
 
 ---
 
-### `GET /api/empresas/:empresaHandle/funcionarios`
-Lista todas as solicitações de funcionário da empresa (qualquer status), já com o nome do usuário. Só o **dono da empresa** pode chamar. 🔒 **Autenticado.**
-
-Path params: `empresaHandle` (número)
-
-Sem request body.
-
-Resposta `200 OK`:
-```json
-[
-  {
-    "handle": 1,
-    "keyPublica": "00000000-0000-0000-0000-000000000002",
-    "nome": "Arthur",
-    "sobrenome": "Souza",
-    "email": "arthur@vispro.com",
-    "status": "Pendente"
-  }
-]
-```
-
-Erros: `404` empresa não encontrada · `403` quem chama não é o dono.
-
----
-
 ### `POST /api/empresas/:empresaHandle/funcionarios/:solicitacaoHandle/cancelar`
 Cancela uma solicitação de vínculo que ainda está pendente. Só o **dono da empresa** pode chamar. 🔒 **Autenticado.**
 
@@ -233,6 +208,31 @@ Sem request body.
 Resposta `204 No Content`.
 
 Erros: `404` solicitação ou empresa não encontrada · `403` quem chama não é o dono · `409` solicitação não está aceita.
+
+---
+
+### `GET /api/empresas/:empresaHandle/funcionarios`
+Lista todas as solicitações de funcionário da empresa (qualquer status). Só o **dono da empresa** pode chamar. 🔒 **Autenticado.**
+
+Path params: `empresaHandle` (número)
+
+Sem request body.
+
+Resposta `200 OK`:
+```json
+[
+  {
+    "handle": 1,
+    "keyPublica": "00000000-0000-0000-0000-000000000002",
+    "nome": "Arthur",
+    "sobrenome": "Souza",
+    "email": "arthur@vispro.com",
+    "status": "Pendente"
+  }
+]
+```
+
+Erros: `404` empresa não encontrada · `403` quem chama não é o dono.
 
 ---
 
