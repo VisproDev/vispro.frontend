@@ -8,16 +8,21 @@ import { AddEmployeesPage } from '@/features/empresas/presentation/AddEmployeesP
 import { FuncionariosPage } from '@/features/empresas/presentation/FuncionariosPage';
 import { AddFuncionarioPage } from '@/features/empresas/presentation/AddFuncionarioPage';
 import { DashboardPage } from '@/features/dashboard/presentation/DashboardPage';
+import { AddVistoriaPage } from '@/features/vistorias/presentation/AddVistoriaPage';
+import { VistoriasPage } from '@/features/vistorias/presentation/VistoriasPage';
+import type { Vistoria } from '@/features/vistorias/domain/vistoria';
 import { AppShell } from '@/shared/presentation/layouts';
 import { clearToken } from '@/shared/infrastructure/storage/token-storage';
 
 type Stage = "signup" | "login" | "create-company" | "add-employees" | "app";
-type View = "dashboard" | "funcionarios" | "novo-funcionario";
+type View = "dashboard" | "funcionarios" | "novo-funcionario" | "vistorias" | "nova-vistoria";
 
 const VIEW_TITLES: Record<View, string> = {
   dashboard: "Dashboard",
   funcionarios: "Funcionários",
   "novo-funcionario": "Adicionar funcionário",
+  vistorias: "Vistorias",
+  "nova-vistoria": "Nova vistoria",
 };
 
 function App() {
@@ -25,6 +30,7 @@ function App() {
   const [view, setView] = useState<View>("dashboard");
   const [account, setAccount] = useState<ContaAutenticada | null>(null);
   const [company, setCompany] = useState<CompanyResult | null>(null);
+  const [vistoriaSelecionada, setVistoriaSelecionada] = useState<Vistoria | null>(null);
 
   const handleAccountCreated = (acc: ContaAutenticada) => {
     setAccount(acc);
@@ -79,7 +85,13 @@ function App() {
   const workspaceName = company?.isEmployee ? (account?.name?.split(" ")[0] || "Workspace") : (company?.companyName || "Workspace");
 
   const handleNavigate = (key: string) => {
-    if (key === "dashboard" || key === "funcionarios" || key === "novo-funcionario") {
+    if (
+      key === "dashboard" ||
+      key === "funcionarios" ||
+      key === "novo-funcionario" ||
+      key === "vistorias" ||
+      key === "nova-vistoria"
+    ) {
       setView(key);
     }
   };
@@ -110,6 +122,37 @@ function App() {
 
       {view === "novo-funcionario" && (
         <AddFuncionarioPage empresaHandle={company?.empresaHandle ?? null} />
+      )}
+
+      {view === "vistorias" && (
+        <VistoriasPage
+          account={account}
+          company={company}
+          onNovaVistoria={() => {
+            setVistoriaSelecionada(null);
+            setView("nova-vistoria");
+          }}
+          onAbrirVistoria={(vistoria) => {
+            setVistoriaSelecionada(vistoria);
+            setView("nova-vistoria");
+          }}
+        />
+      )}
+
+      {view === "nova-vistoria" && (
+        <AddVistoriaPage
+          account={account}
+          company={company}
+          vistoria={vistoriaSelecionada}
+          onCancel={() => {
+            setVistoriaSelecionada(null);
+            setView("vistorias");
+          }}
+          onAgendada={() => {
+            setVistoriaSelecionada(null);
+            setView("vistorias");
+          }}
+        />
       )}
     </AppShell>
   );
