@@ -11,10 +11,10 @@ export interface CriarContaInput {
   senha: string;
 }
 
-const KEYCLOAK_CLIENT_ID = "VisproApi";
-const KEYCLOAK_CLIENT_SECRET = "***REMOVED-KEYCLOAK-CLIENT-SECRET***";
-const KEYCLOAK_TOKEN_URL = "/keycloak/realms/Vispro/protocol/openid-connect/token";
-const KEYCLOAK_LOGOUT_URL = "/keycloak/realms/Vispro/protocol/openid-connect/logout";
+const KEYCLOAK_CLIENT_ID = import.meta.env.VITE_KEYCLOAK_CLIENT_ID;
+const KEYCLOAK_CLIENT_SECRET = import.meta.env.VITE_KEYCLOAK_CLIENT_SECRET;
+const KEYCLOAK_TOKEN_URL = import.meta.env.VITE_KEYCLOAK_TOKEN_URL;
+const KEYCLOAK_LOGOUT_URL = import.meta.env.VITE_KEYCLOAK_LOGOUT_URL;
 
 interface KeycloakTokenResponse {
   access_token: string;
