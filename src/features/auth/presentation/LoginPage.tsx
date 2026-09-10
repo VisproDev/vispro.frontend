@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { ArrowRight, LoaderCircle, Mail, TriangleAlert } from 'lucide-react';
+import { ArrowRight, Info, LoaderCircle, Mail, TriangleAlert } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { autenticarUsuario } from '../application/autenticar-usuario';
+import { iniciarSessao } from '../application/sessao';
 import type { ContaAutenticada } from '../domain/conta';
 import type { CompanyResult } from '@/features/empresas/presentation/CreateCompanyPage';
 
 interface LoginPageProps {
   onComplete: (account: ContaAutenticada, company: CompanyResult) => void;
   onNavigateToSignup?: () => void;
+  /** ex.: "Sua sessão expirou por inatividade" — exibido como aviso acima do formulário. */
+  mensagemInicial?: string;
 }
 
-export function LoginPage({ onComplete, onNavigateToSignup }: LoginPageProps) {
+export function LoginPage({ onComplete, onNavigateToSignup, mensagemInicial }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -32,7 +34,7 @@ export function LoginPage({ onComplete, onNavigateToSignup }: LoginPageProps) {
     }
     setLoading(true);
     try {
-      const usuario = await autenticarUsuario(email.trim().toLowerCase(), password);
+      const usuario = await iniciarSessao(email.trim().toLowerCase(), password);
       onComplete(
         {
           handle: usuario.handle,
@@ -75,6 +77,13 @@ export function LoginPage({ onComplete, onNavigateToSignup }: LoginPageProps) {
         </CardHeader>
 
         <CardContent className="grid gap-4 px-9 pt-6">
+          {mensagemInicial && (
+            <Alert className="py-2.5">
+              <Info />
+              <AlertDescription>{mensagemInicial}</AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid gap-1.5">
             <Label htmlFor="login-email" className="text-[13px] font-semibold">E-mail</Label>
             <div className="relative">
