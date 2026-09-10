@@ -12,6 +12,8 @@ import { DashboardPage } from '@/features/dashboard/presentation/DashboardPage';
 import { AddVistoriaPage } from '@/features/vistorias/presentation/AddVistoriaPage';
 import { VistoriasPage } from '@/features/vistorias/presentation/VistoriasPage';
 import type { Vistoria } from '@/features/vistorias/domain/vistoria';
+import { AddProprietarioPage } from '@/features/proprietarios/presentation/AddProprietarioPage';
+import { ProprietariosPage } from '@/features/proprietarios/presentation/ProprietariosPage';
 import { AppShell } from '@/shared/presentation/layouts';
 import {
   encerrarSessao,
@@ -22,7 +24,14 @@ import {
 import { useSessionLifecycle } from '@/shared/presentation/hooks/useSessionLifecycle';
 
 type Stage = "bootstrapping" | "signup" | "login" | "create-company" | "add-employees" | "app";
-type View = "dashboard" | "funcionarios" | "novo-funcionario" | "vistorias" | "nova-vistoria";
+type View =
+  | "dashboard"
+  | "funcionarios"
+  | "novo-funcionario"
+  | "vistorias"
+  | "nova-vistoria"
+  | "proprietarios"
+  | "novo-proprietario";
 
 /** Mesma conversão feita em LoginPage.tsx ao autenticar — reaproveitada aqui para reconstruir a
  *  sessão da UI (conta + empresa) a partir do perfil devolvido por restaurarSessao(). */
@@ -52,6 +61,8 @@ const VIEW_TITLES: Record<View, string> = {
   "novo-funcionario": "Adicionar funcionário",
   vistorias: "Vistorias",
   "nova-vistoria": "Nova vistoria",
+  proprietarios: "Proprietários",
+  "novo-proprietario": "Adicionar proprietário",
 };
 
 function App() {
@@ -180,7 +191,9 @@ function App() {
       key === "funcionarios" ||
       key === "novo-funcionario" ||
       key === "vistorias" ||
-      key === "nova-vistoria"
+      key === "nova-vistoria" ||
+      key === "proprietarios" ||
+      key === "novo-proprietario"
     ) {
       setView(key);
     }
@@ -242,6 +255,21 @@ function App() {
             setVistoriaSelecionada(null);
             setView("vistorias");
           }}
+        />
+      )}
+
+      {view === "proprietarios" && (
+        <ProprietariosPage
+          company={company}
+          onAddProprietario={() => setView("novo-proprietario")}
+        />
+      )}
+
+      {view === "novo-proprietario" && (
+        <AddProprietarioPage
+          company={company}
+          onCancel={() => setView("proprietarios")}
+          onCriado={() => setView("proprietarios")}
         />
       )}
     </AppShell>
