@@ -2,7 +2,20 @@ export const API_BASE = "/api";
 
 export interface ApiError {
   erro: string;
-  detalhes?: string[];
+  detalhes?: unknown[];
+}
+
+function formatarDetalhe(detalhe: unknown): string {
+  if (typeof detalhe === "string") {
+    return detalhe;
+  }
+  if (detalhe && typeof detalhe === "object" && "message" in detalhe) {
+    const mensagem = (detalhe as { message?: unknown }).message;
+    if (typeof mensagem === "string") {
+      return mensagem;
+    }
+  }
+  return "";
 }
 
 /** Lançado quando uma chamada autenticada recebe 401 e a renovação de sessão falha (ou não há handler
@@ -61,7 +74,8 @@ async function doRequest<T>(path: string, options: RequestInit, token: string | 
 
   if (!res.ok) {
     const err: Partial<ApiError> = await res.json().catch(() => ({}));
-    const mensagem = err.detalhes?.length ? `${err.erro} ${err.detalhes.join(" ")}` : err.erro;
+    const detalhesFormatados = (err.detalhes ?? []).map(formatarDetalhe).filter(Boolean);
+    const mensagem = detalhesFormatados.length ? `${err.erro} ${detalhesFormatados.join(" ")}` : err.erro;
     throw new Error(mensagem || `Erro na requisição (${res.status})`);
   }
 
