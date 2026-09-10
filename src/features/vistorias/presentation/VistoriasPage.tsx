@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
   Building2,
-  CalendarDays,
   ChevronLeft,
   ChevronRight,
   ClipboardCheck,
   ClipboardList,
-  Clock,
   DoorOpen,
   EllipsisVertical,
   LogOut,
@@ -14,7 +12,6 @@ import {
   Plus,
   Search,
   TriangleAlert,
-  Users,
   X,
 } from 'lucide-react';
 import {
@@ -139,18 +136,6 @@ function dataCurta(iso: string) {
   const mes = String(data.getMonth() + 1).padStart(2, "0");
   const semana = data.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
   return `${semana.charAt(0).toUpperCase()}${semana.slice(1)}, ${dia}/${mes}`;
-}
-
-/** "9 de setembro de 2026" */
-function dataPorExtenso(iso: string) {
-  return dataDoISO(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
-}
-
-function formatDuracao(minutos: number) {
-  if (minutos % 60 === 0) return `${minutos / 60}h`;
-  const horas = Math.floor(minutos / 60);
-  const resto = minutos % 60;
-  return horas > 0 ? `${horas}h${resto}` : `${resto}min`;
 }
 
 export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistoria }: VistoriasPageProps) {
