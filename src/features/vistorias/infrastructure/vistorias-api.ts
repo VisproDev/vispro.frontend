@@ -42,3 +42,15 @@ export async function atualizarVistoria(
     body: JSON.stringify(data),
   }, getToken());
 }
+
+/** POST /api/empresas/:empresaHandle/vistorias/:vistoriaHandle/cancelar — cancela uma vistoria agendada. */
+export async function cancelarVistoria(
+  empresaHandle: number,
+  vistoriaHandle: number,
+  motivoCancelamento: string | null = null,
+): Promise<Vistoria> {
+  return apiRequest<Vistoria>(`/empresas/${empresaHandle}/vistorias/${vistoriaHandle}/cancelar`, {
+    method: "POST",
+    body: JSON.stringify({ motivoCancelamento }),
+  }, getToken());
+}

@@ -8,18 +8,36 @@ import {
   ClipboardList,
   Clock,
   DoorOpen,
+  EllipsisVertical,
   LogOut,
   MapPin,
   Plus,
   Search,
   TriangleAlert,
   Users,
+  X,
 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -50,7 +68,7 @@ import {
   type TipoVistoria,
   type Vistoria,
 } from '../domain/vistoria';
-import { listarVistorias } from '../infrastructure/vistorias-api';
+import { cancelarVistoria, listarVistorias } from '../infrastructure/vistorias-api';
 
 interface VistoriasPageProps {
   account: ContaAutenticada | null;
@@ -102,6 +120,7 @@ const STATUS_BADGE_CLASS: Record<StatusVistoriaComputado, string> = {
   Agendada: "border-transparent bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300",
   "Em andamento": "border-transparent bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300",
   "Concluída": "border-transparent bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300",
+  Cancelada: "border-transparent bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300",
 };
 
 const TH_CLASS = "h-auto bg-secondary px-5 py-3 text-[11px] font-semibold tracking-[0.06em] text-faint uppercase";
@@ -149,6 +168,9 @@ export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistori
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [vistoriadores, setVistoriadores] = useState<OpcaoVistoriadorFiltro[]>([]);
+  const [refreshToken, setRefreshToken] = useState(0);
+  const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [pendingVistoria, setPendingVistoria] = useState<Vistoria | null>(null);
 
   // Debounce da busca por endereço.
   useEffect(() => {
@@ -194,13 +216,35 @@ export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistori
       })
       .finally(() => { if (!cancelado) setLoading(false); });
     return () => { cancelado = true; };
-  }, [empresaHandle, statusFiltro, tipoFiltro, enderecoFiltro, vistoriadorFiltro, pagina]);
+  }, [empresaHandle, statusFiltro, tipoFiltro, enderecoFiltro, vistoriadorFiltro, pagina, refreshToken]);
 
   const itens = resultado?.itens ?? [];
   const totalPaginas = resultado?.totalPaginas ?? 1;
   const vistoriadorOpcoes: OpcaoVistoriadorFiltro[] = account
     ? [{ handle: account.handle, nome: `${account.name} (você)` }, ...vistoriadores.filter(v => v.handle !== account.handle)]
     : vistoriadores;
+
+  function askCancelar(vistoria: Vistoria) {
+    setPendingVistoria(vistoria);
+  }
+
+  async function handleConfirmCancelar() {
+    if (!pendingVistoria || empresaHandle == null) return;
+    const vistoria = pendingVistoria;
+    setActionLoading(vistoria.handle);
+    try {
+      await cancelarVistoria(empresaHandle, vistoria.handle);
+      setPendingVistoria(null);
+      setRefreshToken(t => t + 1);
+    } catch (err) {
+      setError((err instanceof Error ? err.message : "") || "Erro ao cancelar vistoria");
+      setPendingVistoria(null);
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  const confirmCancelarLoading = pendingVistoria != null && actionLoading === pendingVistoria.handle;
 
   return (
     <>
@@ -289,13 +333,14 @@ export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistori
               <TableHead className={TH_CLASS}>Vistoriador</TableHead>
               <TableHead className={TH_CLASS}>Tipo</TableHead>
               <TableHead className={TH_CLASS}>Status</TableHead>
+              <TableHead className={`${TH_CLASS} w-11`} />
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading &&
               Array.from({ length: 6 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
-                  <TableCell className={TD_CLASS} colSpan={6}>
+                  <TableCell className={TD_CLASS} colSpan={7}>
                     <Skeleton className="h-9 w-full" />
                   </TableCell>
                 </TableRow>
@@ -341,6 +386,28 @@ export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistori
                       {status}
                     </Badge>
                   </TableCell>
+                  <TableCell className={TD_CLASS} onClick={e => e.stopPropagation()}>
+                    {status === "Agendada" && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="size-7 text-faint"
+                            disabled={actionLoading === vistoria.handle}
+                          >
+                            <EllipsisVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="min-w-50">
+                          <DropdownMenuItem variant="destructive" onSelect={() => askCancelar(vistoria)}>
+                            <X />
+                            Cancelar vistoria
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </TableCell>
                 </TableRow>
               );
             })}
@@ -383,6 +450,32 @@ export function VistoriasPage({ account, company, onNovaVistoria, onAbrirVistori
           </div>
         )}
       </Card>
+
+      <AlertDialog
+        open={pendingVistoria != null}
+        onOpenChange={open => { if (!open && !confirmCancelarLoading) setPendingVistoria(null); }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancelar vistoria?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingVistoria
+                ? `A vistoria em ${pendingVistoria.endereco} no dia ${dataCurta(pendingVistoria.data)} às ${pendingVistoria.horario} será cancelada. Essa ação não pode ser desfeita.`
+                : ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={confirmCancelarLoading}>Voltar</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              disabled={confirmCancelarLoading}
+              onClick={e => { e.preventDefault(); handleConfirmCancelar(); }}
+            >
+              {confirmCancelarLoading ? "Aguarde…" : "Cancelar vistoria"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
