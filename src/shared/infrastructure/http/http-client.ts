@@ -61,7 +61,8 @@ async function doRequest<T>(path: string, options: RequestInit, token: string | 
 
   if (!res.ok) {
     const err: Partial<ApiError> = await res.json().catch(() => ({}));
-    throw new Error(err.erro || `Erro na requisição (${res.status})`);
+    const mensagem = err.detalhes?.length ? `${err.erro} ${err.detalhes.join(" ")}` : err.erro;
+    throw new Error(mensagem || `Erro na requisição (${res.status})`);
   }
 
   if (res.status === 204) {

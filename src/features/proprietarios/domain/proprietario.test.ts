@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatarDocumento, normalizarDocumento, validarDocumento } from './proprietario';
+import { cursorAposDigito, formatarDocumento, normalizarDocumento, validarDocumento, validarEmail } from './proprietario';
 
 describe('proprietario (domain)', () => {
   describe('normalizarDocumento', () => {
@@ -52,6 +52,35 @@ describe('proprietario (domain)', () => {
     it('rejeita tamanhos diferentes de 11 ou 14 dígitos', () => {
       expect(validarDocumento("123")).toBe(false);
       expect(validarDocumento("")).toBe(false);
+    });
+  });
+
+  describe('validarEmail', () => {
+    it('aceita vazio (campo opcional)', () => {
+      expect(validarEmail("")).toBe(true);
+      expect(validarEmail("   ")).toBe(true);
+    });
+
+    it('aceita email com formato válido', () => {
+      expect(validarEmail("contato@empresa.com")).toBe(true);
+    });
+
+    it('rejeita email sem @ ou sem domínio', () => {
+      expect(validarEmail("contato")).toBe(false);
+      expect(validarEmail("contato@")).toBe(false);
+      expect(validarEmail("contato@empresa")).toBe(false);
+    });
+  });
+
+  describe('cursorAposDigito', () => {
+    it('retorna 0 quando não há dígitos antes do cursor', () => {
+      expect(cursorAposDigito("123.456.789-09", 0)).toBe(0);
+    });
+
+    it('pula os separadores da máscara ao localizar o n-ésimo dígito', () => {
+      expect(cursorAposDigito("123.456.789-09", 3)).toBe(3);
+      expect(cursorAposDigito("123.456.789-09", 4)).toBe(5);
+      expect(cursorAposDigito("123.456.789-09", 11)).toBe(14);
     });
   });
 });

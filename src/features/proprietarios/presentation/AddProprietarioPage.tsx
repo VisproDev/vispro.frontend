@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type KeyboardEvent, useState } from 'react';
 import { Check, CircleCheck, IdCard, LoaderCircle, Mail, Phone, TriangleAlert, User } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -13,7 +13,13 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { CompanyResult } from '@/features/empresas/presentation/CreateCompanyPage';
-import { formatarDocumento, normalizarDocumento, validarDocumento } from '../domain/proprietario';
+import {
+  cursorAposDigito,
+  formatarDocumento,
+  normalizarDocumento,
+  validarDocumento,
+  validarEmail,
+} from '../domain/proprietario';
 import { criarProprietario } from '../infrastructure/proprietarios-api';
 
 interface AddProprietarioPageProps {
@@ -42,6 +48,38 @@ export function AddProprietarioPage({ company, onCancel, onCriado }: AddPropriet
   };
 
   const documentoValido = documento.trim() === "" || validarDocumento(documento);
+  const emailValido = validarEmail(email);
+
+  // Ao apagar um separador da máscara (Backspace/Delete), remove o dígito adjacente em vez de
+  // ignorar a tecla — sem isso, apagar "-" em "123.456.789-09" reformata pro mesmo texto.
+  const handleDocumentoKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Backspace" && e.key !== "Delete") return;
+
+    const input = e.currentTarget;
+    const cursor = input.selectionStart;
+    if (cursor == null || input.selectionEnd !== cursor) return;
+
+    const formatado = formatarDocumento(documento);
+    const digitos = normalizarDocumento(documento);
+
+    if (e.key === "Backspace" && cursor > 0 && /\D/.test(formatado[cursor - 1])) {
+      e.preventDefault();
+      const digitIndex = formatado.slice(0, cursor).replace(/\D/g, "").length;
+      if (digitIndex === 0) return;
+      aplicarNovoDocumento(digitos.slice(0, digitIndex - 1) + digitos.slice(digitIndex), digitIndex - 1, input);
+    } else if (e.key === "Delete" && cursor < formatado.length && /\D/.test(formatado[cursor])) {
+      e.preventDefault();
+      const digitIndex = formatado.slice(0, cursor).replace(/\D/g, "").length;
+      aplicarNovoDocumento(digitos.slice(0, digitIndex) + digitos.slice(digitIndex + 1), digitIndex, input);
+    }
+  };
+
+  const aplicarNovoDocumento = (novosDigitos: string, novoDigitIndex: number, input: HTMLInputElement) => {
+    setDocumento(novosDigitos);
+    limparAvisos();
+    const novoCursor = cursorAposDigito(formatarDocumento(novosDigitos), novoDigitIndex);
+    requestAnimationFrame(() => input.setSelectionRange(novoCursor, novoCursor));
+  };
 
   const handleCriar = async () => {
     limparAvisos();
@@ -60,6 +98,10 @@ export function AddProprietarioPage({ company, onCancel, onCriado }: AddPropriet
     }
     if (!validarDocumento(documento)) {
       setError("Documento inválido — confira o CPF ou CNPJ informado");
+      return;
+    }
+    if (!validarEmail(email)) {
+      setError("Email inválido — confira o endereço informado");
       return;
     }
 
@@ -131,6 +173,7 @@ export function AddProprietarioPage({ company, onCancel, onCriado }: AddPropriet
               placeholder="000.000.000-00"
               value={formatarDocumento(documento)}
               onChange={e => { setDocumento(e.target.value); limparAvisos(); }}
+              onKeyDown={handleDocumentoKeyDown}
               disabled={loading}
               aria-invalid={!documentoValido}
             />
@@ -171,8 +214,12 @@ export function AddProprietarioPage({ company, onCancel, onCriado }: AddPropriet
                 value={email}
                 onChange={e => { setEmail(e.target.value); limparAvisos(); }}
                 disabled={loading}
+                aria-invalid={!emailValido}
               />
             </div>
+            {!emailValido && (
+              <p className="text-xs text-destructive">Email inválido — confira o endereço informado.</p>
+            )}
           </div>
         </div>
 
@@ -193,7 +240,11 @@ export function AddProprietarioPage({ company, onCancel, onCriado }: AddPropriet
           <Button variant="outline" className="h-10" onClick={onCancel} disabled={loading}>
             Cancelar
           </Button>
-          <Button className="h-10" onClick={handleCriar} disabled={loading || !nome.trim() || !documento.trim()}>
+          <Button
+            className="h-10"
+            onClick={handleCriar}
+            disabled={loading || !nome.trim() || !documento.trim() || !emailValido}
+          >
             {loading ? <LoaderCircle className="animate-spin" /> : <Check />}
             Cadastrar proprietário
           </Button>

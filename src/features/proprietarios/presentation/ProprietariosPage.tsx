@@ -35,11 +35,22 @@ export function ProprietariosPage({ company, onAddProprietario }: ProprietariosP
 
   useEffect(() => {
     if (empresaHandle == null) return;
+
+    let ativo = true;
+    setLoading(true);
+    setError("");
+
     listarProprietarios(empresaHandle)
-      .then(setProprietarios)
-      .catch(err => setError((err instanceof Error ? err.message : "") || "Erro ao carregar proprietários"))
-      .finally(() => setLoading(false));
+      .then(dados => { if (ativo) setProprietarios(dados); })
+      .catch(err => {
+        if (ativo) setError((err instanceof Error ? err.message : "") || "Erro ao carregar proprietários");
+      })
+      .finally(() => { if (ativo) setLoading(false); });
+
+    return () => { ativo = false; };
   }, [empresaHandle]);
+
+  const carregando = empresaHandle != null && loading;
 
   return (
     <>
@@ -76,7 +87,7 @@ export function ProprietariosPage({ company, onAddProprietario }: ProprietariosP
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading &&
+            {carregando &&
               Array.from({ length: 4 }).map((_, i) => (
                 <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
                   <TableCell className={TD_CLASS} colSpan={4}>
@@ -85,7 +96,7 @@ export function ProprietariosPage({ company, onAddProprietario }: ProprietariosP
                 </TableRow>
               ))}
 
-            {!loading && proprietarios.map(proprietario => (
+            {!carregando && proprietarios.map(proprietario => (
               <TableRow key={proprietario.handle}>
                 <TableCell className={TD_CLASS}>
                   <div className="flex items-center gap-2.5">
@@ -111,7 +122,7 @@ export function ProprietariosPage({ company, onAddProprietario }: ProprietariosP
           </TableBody>
         </Table>
 
-        {!loading && proprietarios.length === 0 && (
+        {!carregando && proprietarios.length === 0 && (
           <div className="px-5 py-12 text-center text-faint">
             <ContactRound className="mx-auto mb-2.5 size-[26px]" />
             <div className="mb-1 text-sm font-semibold text-foreground">Nenhum proprietário ainda</div>

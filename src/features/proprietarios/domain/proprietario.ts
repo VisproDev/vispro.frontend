@@ -81,3 +81,23 @@ export function validarDocumento(documento: string): boolean {
   if (digitos.length === 14) return validarCnpj(digitos);
   return false;
 }
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Espelha o contrato do backend (`email().nullish()`): vazio é válido, senão precisa ter formato de email. */
+export function validarEmail(email: string): boolean {
+  return email.trim() === "" || EMAIL_REGEX.test(email.trim());
+}
+
+/** Retorna a posição (índice, base 0) do dígito de ordem `digitCount` dentro do texto já formatado. */
+export function cursorAposDigito(formatado: string, digitCount: number): number {
+  if (digitCount <= 0) return 0;
+  let vistos = 0;
+  for (let i = 0; i < formatado.length; i++) {
+    if (/\d/.test(formatado[i])) {
+      vistos++;
+      if (vistos === digitCount) return i + 1;
+    }
+  }
+  return formatado.length;
+}
