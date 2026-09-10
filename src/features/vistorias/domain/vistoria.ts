@@ -23,6 +23,8 @@ export interface Vistoria {
   bairroCidade: string;
   cliente: string;
   observacoes: string | null;
+  cancelada: boolean;
+  motivoCancelamento: string | null;
   vistoriador: VistoriadorVistoria;
 }
 
@@ -62,13 +64,14 @@ export interface PaginaVistorias {
   totalPaginas: number;
 }
 
-/** Status de exibição derivado de dataHora + duracaoMinutos — a API não guarda status por vistoria. */
-export type StatusVistoriaComputado = "Agendada" | "Em andamento" | "Concluída";
+/** Status de exibição derivado de dataHora + duracaoMinutos + cancelada — a API não guarda um status único por vistoria. */
+export type StatusVistoriaComputado = "Agendada" | "Em andamento" | "Concluída" | "Cancelada";
 
 export function calcularStatusVistoria(
-  vistoria: Pick<Vistoria, "dataHora" | "duracaoMinutos">,
+  vistoria: Pick<Vistoria, "dataHora" | "duracaoMinutos" | "cancelada">,
   agora: Date = new Date(),
 ): StatusVistoriaComputado {
+  if (vistoria.cancelada) return "Cancelada";
   const inicio = new Date(vistoria.dataHora).getTime();
   const fim = inicio + vistoria.duracaoMinutos * 60000;
   const agoraMs = agora.getTime();
