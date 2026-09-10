@@ -122,10 +122,16 @@ Solicita o vínculo de um usuário como funcionário da empresa. Só o **dono da
 
 Path params: `empresaHandle` (número)
 
-Request body:
+Request body — **exatamente um** dos dois campos:
 ```json
 {
-  "keyPublicaUsuario": "uuid do usuário que será convidado, obrigatório"
+  "keyPublicaUsuario": "uuid do usuário que será convidado"
+}
+```
+ou
+```json
+{
+  "email": "e-mail do usuário que será convidado"
 }
 ```
 
@@ -139,7 +145,7 @@ Resposta `201 Created`:
 }
 ```
 
-Erros: `404` empresa ou usuário alvo não encontrados · `403` quem chama não é o dono · `409` já existe solicitação pendente para esse par empresa/usuário.
+Erros: `400` body inválido (ambos/nenhum campo, e-mail malformado) · `404` empresa ou usuário alvo não encontrados · `403` quem chama não é o dono · `409` já existe solicitação pendente para esse par empresa/usuário.
 
 ---
 

@@ -10,11 +10,19 @@ export async function criarEmpresa(data: { nome: string }): Promise<Empresa> {
   }, getToken());
 }
 
-/** POST /api/empresas/:empresaHandle/funcionarios — solicita vínculo de funcionário. Só o dono da empresa. */
+/** POST /api/empresas/:empresaHandle/funcionarios — solicita vínculo de funcionário pela key. Só o dono da empresa. */
 export async function adicionarFuncionario(empresaHandle: number, keyPublicaUsuario: string): Promise<Solicitacao> {
   return apiRequest<Solicitacao>(`/empresas/${empresaHandle}/funcionarios`, {
     method: "POST",
     body: JSON.stringify({ keyPublicaUsuario }),
+  }, getToken());
+}
+
+/** POST /api/empresas/:empresaHandle/funcionarios — solicita vínculo de funcionário por e-mail. Só o dono da empresa. */
+export async function adicionarFuncionarioPorEmail(empresaHandle: number, email: string): Promise<Solicitacao> {
+  return apiRequest<Solicitacao>(`/empresas/${empresaHandle}/funcionarios`, {
+    method: "POST",
+    body: JSON.stringify({ email }),
   }, getToken());
 }
 
