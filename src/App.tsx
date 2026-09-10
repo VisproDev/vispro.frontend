@@ -14,6 +14,8 @@ import { VistoriasPage } from '@/features/vistorias/presentation/VistoriasPage';
 import type { Vistoria } from '@/features/vistorias/domain/vistoria';
 import { AddProprietarioPage } from '@/features/proprietarios/presentation/AddProprietarioPage';
 import { ProprietariosPage } from '@/features/proprietarios/presentation/ProprietariosPage';
+import { AddInquilinoPage } from '@/features/inquilinos/presentation/AddInquilinoPage';
+import { InquilinosPage } from '@/features/inquilinos/presentation/InquilinosPage';
 import { AppShell } from '@/shared/presentation/layouts';
 import {
   encerrarSessao,
@@ -31,7 +33,9 @@ type View =
   | "vistorias"
   | "nova-vistoria"
   | "proprietarios"
-  | "novo-proprietario";
+  | "novo-proprietario"
+  | "inquilinos"
+  | "novo-inquilino";
 
 /** Mesma conversão feita em LoginPage.tsx ao autenticar — reaproveitada aqui para reconstruir a
  *  sessão da UI (conta + empresa) a partir do perfil devolvido por restaurarSessao(). */
@@ -63,6 +67,8 @@ const VIEW_TITLES: Record<View, string> = {
   "nova-vistoria": "Nova vistoria",
   proprietarios: "Proprietários",
   "novo-proprietario": "Adicionar proprietário",
+  inquilinos: "Inquilinos",
+  "novo-inquilino": "Adicionar inquilino",
 };
 
 function App() {
@@ -193,7 +199,9 @@ function App() {
       key === "vistorias" ||
       key === "nova-vistoria" ||
       key === "proprietarios" ||
-      key === "novo-proprietario"
+      key === "novo-proprietario" ||
+      key === "inquilinos" ||
+      key === "novo-inquilino"
     ) {
       setView(key);
     }
@@ -270,6 +278,21 @@ function App() {
           company={company}
           onCancel={() => setView("proprietarios")}
           onCriado={() => setView("proprietarios")}
+        />
+      )}
+
+      {view === "inquilinos" && (
+        <InquilinosPage
+          company={company}
+          onAddInquilino={() => setView("novo-inquilino")}
+        />
+      )}
+
+      {view === "novo-inquilino" && (
+        <AddInquilinoPage
+          company={company}
+          onCancel={() => setView("inquilinos")}
+          onCriado={() => setView("inquilinos")}
         />
       )}
     </AppShell>

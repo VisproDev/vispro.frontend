@@ -48,12 +48,14 @@ const WORKSPACE_ITEMS: SidebarNavItem[] = [
   { key: "calendario", label: "Calendário", icon: CalendarDays },
   { key: "vistorias", label: "Vistorias", icon: ClipboardList },
   { key: "proprietarios", label: "Proprietários", icon: ContactRound },
+  { key: "inquilinos", label: "Inquilinos", icon: ContactRound },
   { key: "funcionarios", label: "Funcionários", icon: Users },
 ];
 
 const QUICK_ACTIONS: SidebarNavItem[] = [
   { key: "nova-vistoria", label: "Adicionar vistoria", icon: Plus },
   { key: "novo-proprietario", label: "Adicionar proprietário", icon: UserRoundPlus },
+  { key: "novo-inquilino", label: "Adicionar inquilino", icon: UserRoundPlus },
   { key: "novo-funcionario", label: "Adicionar funcionário", icon: UserPlus },
 ];
 
