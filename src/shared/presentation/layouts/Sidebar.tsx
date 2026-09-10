@@ -1,4 +1,16 @@
-import { CalendarDays, ChevronsUpDown, ClipboardList, House, LogOut, Plus, Settings, UserPlus, Users } from 'lucide-react';
+import {
+  CalendarDays,
+  ChevronsUpDown,
+  ClipboardList,
+  ContactRound,
+  House,
+  LogOut,
+  Plus,
+  Settings,
+  UserPlus,
+  UserRoundPlus,
+  Users,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -35,11 +47,13 @@ const WORKSPACE_ITEMS: SidebarNavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: House },
   { key: "calendario", label: "Calendário", icon: CalendarDays },
   { key: "vistorias", label: "Vistorias", icon: ClipboardList },
+  { key: "proprietarios", label: "Proprietários", icon: ContactRound },
   { key: "funcionarios", label: "Funcionários", icon: Users },
 ];
 
 const QUICK_ACTIONS: SidebarNavItem[] = [
   { key: "nova-vistoria", label: "Adicionar vistoria", icon: Plus },
+  { key: "novo-proprietario", label: "Adicionar proprietário", icon: UserRoundPlus },
   { key: "novo-funcionario", label: "Adicionar funcionário", icon: UserPlus },
 ];
 
