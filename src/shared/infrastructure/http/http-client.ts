@@ -27,6 +27,19 @@ export class SessionExpiredError extends Error {
   }
 }
 
+/** Erro genérico de uma chamada `apiRequest` malsucedida (exceto 401, que vira `SessionExpiredError`).
+ *  Carrega o `status` HTTP para quem consome poder tratar um código específico (ex: 403) sem depender
+ *  do texto da mensagem devolvida pelo backend. */
+export class ApiRequestError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.status = status;
+  }
+}
+
 type RenewHandler = () => Promise<string | null>;
 type SessionExpiredHandler = () => void;
 
@@ -76,7 +89,7 @@ async function doRequest<T>(path: string, options: RequestInit, token: string | 
     const err: Partial<ApiError> = await res.json().catch(() => ({}));
     const detalhesFormatados = (err.detalhes ?? []).map(formatarDetalhe).filter(Boolean);
     const mensagem = detalhesFormatados.length ? `${err.erro} ${detalhesFormatados.join(" ")}` : err.erro;
-    throw new Error(mensagem || `Erro na requisição (${res.status})`);
+    throw new ApiRequestError(mensagem || `Erro na requisição (${res.status})`, res.status);
   }
 
   if (res.status === 204) {

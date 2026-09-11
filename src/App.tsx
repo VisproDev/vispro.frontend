@@ -17,6 +17,8 @@ import { AddProprietarioPage } from '@/features/proprietarios/presentation/AddPr
 import { ProprietariosPage } from '@/features/proprietarios/presentation/ProprietariosPage';
 import { AddInquilinoPage } from '@/features/inquilinos/presentation/AddInquilinoPage';
 import { InquilinosPage } from '@/features/inquilinos/presentation/InquilinosPage';
+import { AddImovelPage } from '@/features/imoveis/presentation/AddImovelPage';
+import { ImoveisPage } from '@/features/imoveis/presentation/ImoveisPage';
 import { AppShell } from '@/shared/presentation/layouts';
 import {
   encerrarSessao,
@@ -37,7 +39,9 @@ type View =
   | "proprietarios"
   | "novo-proprietario"
   | "inquilinos"
-  | "novo-inquilino";
+  | "novo-inquilino"
+  | "imoveis"
+  | "novo-imovel";
 
 /** Mesma conversão feita em LoginPage.tsx ao autenticar — reaproveitada aqui para reconstruir a
  *  sessão da UI (conta + empresa) a partir do perfil devolvido por restaurarSessao(). */
@@ -72,6 +76,8 @@ const VIEW_TITLES: Record<View, string> = {
   "novo-proprietario": "Adicionar proprietário",
   inquilinos: "Inquilinos",
   "novo-inquilino": "Adicionar inquilino",
+  imoveis: "Imóveis",
+  "novo-imovel": "Adicionar imóvel",
 };
 
 function App() {
@@ -205,7 +211,9 @@ function App() {
       key === "proprietarios" ||
       key === "novo-proprietario" ||
       key === "inquilinos" ||
-      key === "novo-inquilino"
+      key === "novo-inquilino" ||
+      key === "imoveis" ||
+      key === "novo-imovel"
     ) {
       setView(key);
     }
@@ -299,6 +307,21 @@ function App() {
           company={company}
           onCancel={() => setView("inquilinos")}
           onCriado={() => setView("inquilinos")}
+        />
+      )}
+
+      {view === "imoveis" && (
+        <ImoveisPage
+          company={company}
+          onAddImovel={() => setView("novo-imovel")}
+        />
+      )}
+
+      {view === "novo-imovel" && (
+        <AddImovelPage
+          company={company}
+          onCancel={() => setView("imoveis")}
+          onCriado={() => setView("imoveis")}
         />
       )}
     </AppShell>
