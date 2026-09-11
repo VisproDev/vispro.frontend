@@ -1,6 +1,6 @@
 import { apiRequest } from '@/shared/infrastructure/http/http-client';
 import { getToken } from '@/shared/infrastructure/storage/token-storage';
-import type { Empresa, FuncionarioEmpresa, Solicitacao } from '../domain/empresa';
+import type { ConvitePendente, Empresa, FuncionarioEmpresa, Solicitacao } from '../domain/empresa';
 
 /** POST /api/empresas — cria uma empresa (dono é o usuário autenticado). */
 export async function criarEmpresa(data: { nome: string }): Promise<Empresa> {
@@ -59,7 +59,7 @@ export async function listarFuncionarios(empresaHandle: number): Promise<Funcion
   return apiRequest<FuncionarioEmpresa[]>(`/empresas/${empresaHandle}/funcionarios`, { method: "GET" }, getToken());
 }
 
-/** GET /api/usuarios/me/solicitacoes — solicitações de vínculo pendentes do usuário autenticado. */
-export async function listarMinhasSolicitacoes(): Promise<Solicitacao[]> {
-  return apiRequest<Solicitacao[]>("/usuarios/me/solicitacoes", { method: "GET" }, getToken());
+/** GET /api/usuarios/me/solicitacoes — convites de empresas pendentes de resposta do usuário autenticado. */
+export async function listarConvitesPendentes(): Promise<ConvitePendente[]> {
+  return apiRequest<ConvitePendente[]>("/usuarios/me/solicitacoes", { method: "GET" }, getToken());
 }
