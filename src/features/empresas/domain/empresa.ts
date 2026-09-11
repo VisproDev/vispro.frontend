@@ -27,3 +27,10 @@ export interface FuncionarioEmpresa {
   email: string;
   status: StatusSolicitacao;
 }
+
+/** Convite de empresa pendente de resposta pelo usuário convidado — GET /api/usuarios/me/solicitacoes. */
+export interface ConvitePendente {
+  handle: number;
+  empresaHandle: number;
+  empresaNome: string;
+}

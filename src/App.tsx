@@ -8,6 +8,7 @@ import type { CompanyResult } from '@/features/empresas/presentation/CreateCompa
 import { AddEmployeesPage } from '@/features/empresas/presentation/AddEmployeesPage';
 import { FuncionariosPage } from '@/features/empresas/presentation/FuncionariosPage';
 import { AddFuncionarioPage } from '@/features/empresas/presentation/AddFuncionarioPage';
+import { ConvitesPendentesPage } from '@/features/empresas/presentation/ConvitesPendentesPage';
 import { DashboardPage } from '@/features/dashboard/presentation/DashboardPage';
 import { AddVistoriaPage } from '@/features/vistorias/presentation/AddVistoriaPage';
 import { VistoriasPage } from '@/features/vistorias/presentation/VistoriasPage';
@@ -30,6 +31,7 @@ type View =
   | "dashboard"
   | "funcionarios"
   | "novo-funcionario"
+  | "convites"
   | "vistorias"
   | "nova-vistoria"
   | "proprietarios"
@@ -63,6 +65,7 @@ const VIEW_TITLES: Record<View, string> = {
   dashboard: "Dashboard",
   funcionarios: "Funcionários",
   "novo-funcionario": "Adicionar funcionário",
+  convites: "Convites pendentes",
   vistorias: "Vistorias",
   "nova-vistoria": "Nova vistoria",
   proprietarios: "Proprietários",
@@ -196,6 +199,7 @@ function App() {
       key === "dashboard" ||
       key === "funcionarios" ||
       key === "novo-funcionario" ||
+      key === "convites" ||
       key === "vistorias" ||
       key === "nova-vistoria" ||
       key === "proprietarios" ||
@@ -234,6 +238,8 @@ function App() {
       {view === "novo-funcionario" && (
         <AddFuncionarioPage empresaHandle={company?.empresaHandle ?? null} />
       )}
+
+      {view === "convites" && <ConvitesPendentesPage />}
 
       {view === "vistorias" && (
         <VistoriasPage

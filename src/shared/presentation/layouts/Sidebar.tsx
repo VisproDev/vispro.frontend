@@ -5,6 +5,7 @@ import {
   ContactRound,
   House,
   LogOut,
+  Mail,
   Plus,
   Settings,
   UserPlus,
@@ -50,6 +51,7 @@ const WORKSPACE_ITEMS: SidebarNavItem[] = [
   { key: "proprietarios", label: "Proprietários", icon: ContactRound },
   { key: "inquilinos", label: "Inquilinos", icon: ContactRound },
   { key: "funcionarios", label: "Funcionários", icon: Users },
+  { key: "convites", label: "Convites pendentes", icon: Mail },
 ];
 
 const QUICK_ACTIONS: SidebarNavItem[] = [
